@@ -379,6 +379,7 @@ svg.lens .conn{ stroke:#9b8a72; stroke-width:1.5; stroke-dasharray:4 4; } svg.le
 .ktable td.c{ text-align:center; }
 .ktable .chrow th{ background:#eadbb8; border-radius:8px; }
 .plist{ margin:.3em 0 .6em; padding-left:1.3em; }
+.howto{ font-size:.82em; margin:2px 0 6px; }
 /* 冒険の地図 */
 .worldcard{ padding:10px 10px 12px; }
 .worldcard h3{ margin:2px 6px 8px; }
@@ -395,7 +396,7 @@ svg.lens .conn{ stroke:#9b8a72; stroke-width:1.5; stroke-dasharray:4 4; } svg.le
 .mpin.closed .pl{ background:#555a; }
 .mpin.sel .pi{ outline:4px solid #ffd200; outline-offset:2px; animation:pinpulse 1.4s ease-in-out infinite; }
 @keyframes pinpulse{ 0%,100%{ transform:scale(1) } 50%{ transform:scale(1.12) } }
-.mhero{ position:absolute; transform:translate(-118%,-95%); display:flex; flex-direction:column; align-items:center; z-index:3; pointer-events:none; }
+.mhero{ position:absolute; transform:translate(-132%,-100%); display:flex; flex-direction:column; align-items:center; z-index:3; pointer-events:none; }
 .mhero .ava{ width:52px; height:52px; animation:bob 1.6s ease-in-out infinite; }
 .mhero span{ font-size:.7em; font-weight:900; color:#fff; background:#c9452f; border-radius:999px; padding:0 8px; margin-top:2px; box-shadow:0 2px 0 #0004; }
 @media (max-width: 520px){ #hdr{ gap:6px; padding:6px 8px; } #hdr .logo{ font-size:.95em; } #hdr .logo small{ display:none; } #hdr .lv{ min-width:0; font-size:.75em; } #hdr .iconbtn{ width:44px; height:44px; } }
@@ -1635,7 +1636,7 @@ function showParents(){
 
 /* ---------- 主人公づくり ---------- */
 function showMaker(){
-  showBar(false);
+  showBar(false); renderHdr();
   let look = (S.look||0) % LOOK_N;
   app.innerHTML = `<div class="card"><h3>きみの 名前は？</h3>
     <input class="name-in" id="mk-name" maxlength="8" placeholder="なまえ（8文字まで）" value="${esc(S.name||'')}">
@@ -1727,6 +1728,9 @@ function showMap(sel){
     SND.tap(); showMap(ch);
     setTimeout(()=>{ const el=$('.mappath .chapter'); if(el) el.scrollIntoView({block:'start', behavior:'smooth'}); }, 60);
   });
+  // 地図の 下の 方に いると 見えないので、いま いる 場所が 画面に 入るまで うごかす
+  const mh = $('.mhero');
+  if(mh && typeof sel!=='number') setTimeout(()=>{ const r = mh.getBoundingClientRect(), barH = bar.hidden ? 0 : bar.offsetHeight; if(r.bottom > innerHeight - barH - 40) window.scrollBy({ top: r.bottom - (innerHeight - barH) + 120, behavior:'smooth' }); }, 80);
 }
 function startMissionFrom(id){
   const d = DEFS[id];
@@ -1747,6 +1751,7 @@ function startMissionFrom(id){
 }
 $('#btn-home').addEventListener('click', ()=>{
   if(M && !M.done){ showModal('<h2>マップに もどる？</h2><p>この ミッションの とちゅうの 内容は のこりません。（クリアした ミッションは のこります）</p>', [{label:'つづける'},{label:'マップへ', cls:'pri', onClick:()=>{ M=null; S.started?showMap():showTitle(); }}]); }
+  else if(!S.started && $('#mk-name')){ showModal('<h2>地図は まだ ひらけないよ</h2><p>名前と 見た目を きめて「ぼうけんに 出る！」を おすと、ぼうけんの 地図が ひらくよ。</p>'); }
   else if(!S.started && $('.title-screen')){ showModal('<h2>地図は まだ ひらけないよ</h2><p>「はじめから」を おして 主人公を つくると、ぼうけんの 地図が ひらくよ。</p>'); }
   else { M=null; S.started?showMap():showTitle(); }
 });
@@ -2199,6 +2204,7 @@ function openNumpick(div, st, type, line){
   const nm = q.ratio ? (line==='top'?'もとにする量の テープ':'くらべる量の テープ') : `${M.staffs.length>1?st.item.label+'の ':''}${q[line].name}`;
   np.innerHTML = `<div class="q">${nm} ${fmt(c[line])}${q.ratio && c.top===1 ? '' : q[line].unit} を ${type==='mul'?'なん倍':'いくつで わる'}？</div>
     <div class="nums">${M.nums.map(n=>{ const ok = type==='mul' ? (c.top*n<=100000&&c.bottom*n<=100000) : (divOK(c.top,n)&&divOK(c.bottom,n)); return `<button class="btn ${type==='mul'?'mulc':'divc'}${ok?'':' na'}" data-n="${n}">${type==='mul'?'×':'÷'}${n}</button>`; }).join('')}<button class="btn ghost" data-cancel>やめる</button></div>`;
+  if(type==='div' && $$('.nums .na', np).length) np.insertAdjacentHTML('beforeend', '<div class="muted howto">うすい 数で わると、小数第3位までで わりきれないので えらべないよ。</div>');
   $$('.numpick', $('#staffs')).forEach(o=>{ if(o!==np) o.hidden=true; });
   if(np.scrollIntoView) np.scrollIntoView({block:'nearest', behavior:'smooth'});   // 下の バーに かくれて いたら 見える ところまで うごかす
 }
@@ -2287,6 +2293,7 @@ function onCompare(strat){
 /* ---------- ③ もどす ---------- */
 function sentenceHTML(spec){
   return `<div class="sentence">${spec.slots.map((s,i)=>`<span class="slot${spec.filled[i]?' filled':''}" data-i="${i}">${spec.filled[i]?esc(spec.filled[i]):'？'}</span>`).join('')}</div>
+    ${spec.filled.some(Boolean) && !spec.locked ? '<div class="muted howto">入れた ことばを タップすると はずせるよ</div>' : ''}
     <div class="palette">${spec.palette.map(p=>`<button class="chip${spec.filled.includes(p)?' used':''}" data-p="${esc(p)}">${esc(p)}</button>`).join('')}</div>`;
 }
 function fillSlot(spec, i, val){ if(i<0) return; spec.filled[i]=val; const host=$(`#${spec.host}`); if(host){ host.innerHTML=sentenceHTML(spec); } }
@@ -2783,7 +2790,7 @@ function startSeries(def){
   }else{
     html = `<h2>${def.id}　${R(def.title)}</h2>${talkHTML(def.intro)}<p class="muted">${def.rounds.length}つの パートが あるよ。</p>`;
   }
-  showModal(html, [{label: def.boss?'たたかう！':'はじめる！', cls:'pri', id:'series-go', onClick:()=>{ closeModal(); startRound(ctx); }}]);
+  showModal(html, [{label:'あとで', id:'series-later', onClick:()=>{ M=null; showMap(); }}, {label: def.boss?'たたかう！':'はじめる！', cls:'pri', id:'series-go', onClick:()=>{ closeModal(); startRound(ctx); }}]);
 }
 function startRound(ctx){ startMission(ctx.def.rounds[ctx.roundIdx], ctx); }
 function finishRound(total, hints){
