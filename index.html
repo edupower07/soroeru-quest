@@ -83,13 +83,16 @@ img{ max-width:100%; }
 .title-screen{ text-align:center; padding-top:6px; }
 .title-screen .kv{ position:relative; margin:0 auto 14px; max-width:720px; }
 .title-screen .kv img{ display:block; width:100%; height:auto; }
-.title-screen .kv .logo-big{ position:absolute; left:0; right:0; top:8%; color:#fff; font-size:clamp(1.7em,6.5vw,3.2em); font-weight:900; letter-spacing:.06em; line-height:1.2;
+.title-screen .kv .logo-big{ position:absolute; left:0; right:0; top:8%; color:#fff; font-size:clamp(1.7em,6.5vw,3.2em); font-family:'SQ Title', serif; font-weight:800; letter-spacing:.06em; line-height:1.2;
   text-shadow:0 0 6px #5a3819, 0 0 6px #5a3819, 0 3px 0 #5a3819, 0 5px 10px #0008; -webkit-text-stroke:1px #4a2d14; }
 .title-screen .kv .logo-big small{ display:block; font-size:.42em; letter-spacing:.1em; color:#ffe9a8; -webkit-text-stroke:0; }
 .title-screen .emb{ position:relative; width:min(86vw,600px); margin:4px auto 2px; }
 .title-screen .emb img{ width:100%; display:block; mix-blend-mode:multiply; }
-.title-screen .emb .et{ position:absolute; left:0; right:0; top:49.3%; text-align:center; font-weight:900; font-size:clamp(1em,4.52vw,1.85em); letter-spacing:.08em; color:var(--ink); line-height:1; }
-.title-screen .emb .es{ position:absolute; left:0; right:0; top:61.4%; text-align:center; font-weight:700; font-size:clamp(.8em,2.4vw,1em); letter-spacing:.2em; color:var(--ink2); }
+.title-screen .emb{ container-type:inline-size; }
+/* タイトルの 文字は 埋めこみフォント（SQ Title）で、紋章の 幅に 対する 大きさ（cqw）に する。どの ブラウザでも 帯に おさまる */
+.title-screen .emb .et{ position:absolute; left:0; right:0; top:46.5%; text-align:center; font-family:'SQ Title', serif; font-weight:800; font-size:clamp(1em,4.52vw,1.85em); font-size:5.1cqw; letter-spacing:.08em; color:var(--ink); line-height:1; white-space:nowrap; }
+.title-screen .emb .es{ position:absolute; left:0; right:0; top:59%; text-align:center; font-family:'SQ Title', serif; font-weight:800; font-size:clamp(.8em,2.4vw,1em); font-size:2.45cqw; letter-spacing:.2em; color:var(--ink2); white-space:nowrap; }
+.title-screen .emb .et span, .title-screen .emb .es span{ display:inline-block; }
 .title-screen .menu{ display:flex; flex-direction:column; gap:12px; max-width:380px; margin:0 auto; }
 .title-screen .menu .btn{ font-size:1.15em; }
 
@@ -444,6 +447,11 @@ html{ scroll-padding-bottom:calc(var(--barh, 0px) + 12px); }
 /* モーダル：小さい 画面でも 下の ボタンに とどく ように */
 #modal .box{ max-height:calc(100dvh - 32px); }
 #modal .mbtns{ position:sticky; bottom:-16px; background:var(--card); padding:10px 0 16px; margin-bottom:-16px; }
+</style>
+<style id="title-font">/* タイトル用：しっぽり明朝 B1（SIL OFL）から タイトルの 文字だけ 切り出し。tools/title_font.py で 作りなおせる */
+@font-face{font-family:'SQ Title';font-weight:800;font-style:normal;font-display:block;src:url(data:font/woff2;base64,d09GMgABAAAAAAMUAA8AAAAABkwAAAK+AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGyAcVAZgADQRCAqCBIF0ATYCJAMICwgABCAFhGQHIBckGAgbNQUgnoNxs3xEWzRNhEP0bffFKysRPI19m7d75lYP0WrSIIo2bSeh0YhQAiFCcmti9e//nKVjNTW9FzmGA2BbhPTlpwfe3A/7y/fRjqxygpkugaFd6IOiGdfA9lHCItsGG3AgiWnmE93ENfnvz1/gW7iBH/CBIrfGLo2ijRpkwhPo8ywc4GgiAx0Jzba9j2ckEYX0suVi/G9zgQpd2rRdezIVaCiCQgATYX12QIqE9AOjPmhez5vaoQUECCEpUSIQysRQq4tz/pD7VElb6DHgYPftOGMWRkA5hULNnkORMpzMKXEBbFbYoGgD6QMC4lv6jD5lJAA3KQtyRR9QVBrMdf0Xo4+/cFqefl4FyKAECUeA8wAUAUJMTn4+PbDb8vK0YotwLLUTVuKO5IimK7fJpOr5ifho9yrVLrvdtE8QFT+Ca8zMe0YjR9nll5SEaXoS3mMCR3liW5ZdkHCpJ8C4f7l+e6RN427JN+wYdjahDeMZX9/kMK2mbj5+PwM/lFaB17szfW92oR9Fj2R06IG85dZIq/O7k5WBnZG+L0Pg/VxtKDzp8EtNAkAgd409He6+6xzPv7La/B1en+6twreBJS9cFR7le9gEUCqBoGjjb+Tv9rhOIyCoLRi+4SrWxpRN0tCyMueURVE5HjJEw5p/NKnxH80OBN5ZZIYW2xM5tMRSLP1Ha6zEk51I7g8L+QICzUzMTKEPARd6FwjlcoSF0KNQxhYg6AUjEZdNoFMFESBMQR0BIXLKztiYLyQCBcuIjaTGPCQjHCalMD68NQ7Xde2XPzOFLv0SzHSGJBxvXL5CwsTmRqamJvaufLjwbg/l0VRD4KvIlPBVurE0IyE85vXYSOBQRj77t6mRjZG57uHtr7io2JiLQhm59aWJEcJ8Y8+uPCgDBS3Q5qij/T35+yct9ipvAiFtT8Qq7AEAAAA=) format('woff2');unicode-range:U+301C;}
+@font-face{font-family:'SQ Title';font-weight:800;font-style:normal;font-display:block;src:url(data:font/woff2;base64,d09GMgABAAAAAAPEAA8AAAAAB2wAAANvAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGyAcIAZgADQRCAqEWIQBATYCJAMGCwYABCAFhGQHIBckGAYbCgYArgZjcK9RglpbZKVt3LjB4akX9eVnpSyCaL/X2XcXIFSJ5WoCF1IlVvUokYVrI1yBZRU6Ilt26f9zP30pu54nIkW0yU+YlMjICTMlZvSmX/e9/YAOdIKYqOn27tEJcALcxWa4QDxVidH5Xzvw/99PvvyXgPWOD3gqb7NoqqY/jGiU9GwqiwLbGQ+owKbbEKOCgMjf3PSPfp5AtV5uaKXNxlk2GUoATPeUrtMgM8VJlB8AG94fis0gH+qAKopeyd/q2ZUzuvNLbQ+R/8jHIWkgIL4XX4BBRhQUTiujYJoMQnYP5pfoPLcyCBDFvrGaCCwysXwCfiDgEGk5o2z/MsduDpMKYKj9cCGl+6B0ciHX+6eGXsgXQ+oRcuH+6BVwrLWK0wHy6znLb736JA+G0vkajyCYRLu4LB/j6BAIuye75xLbXRoSqQAE8C52aup5sLaLmjThTOqVIBc41jbDhWsoy7NDzEtgQbgj3kuNQFmcpGH9KpdZodO6wnICIa3Umz+tWCQxKjuaeLTvynpZPPi+vd3mjKFTcTqbIh00ZmP9zcqPxzPBxghtgyFkWS4qZC0oFhOPpWV/r5RmK4fDCAupMlIfSVD1tljdb8iq6wgHFmeeTjyVCcMDNmasVWpNmUc0/jyLdmPR28vfg7lOmdLNQxmDJ7iXzDrYhVEmXFjVsxsVOA+Pat/51VU4WpChAg4Hp7GskDG9lfgQTrqMEquogKXJXHB3FyiLUm4ak8ZQYxUYM5w2nr6ffCkTnp+Py3BeqTXd4DuhAxBIvSNJ/+VVoXTzv5V29BPgzaa91+D78GUL8FU69aAdAahQgCAf//sAIFV86aYeEJQovC/08QWh8ImR9Kq0m1FkIuABNgrL/KFCvX8oWR+Y/IxDZVaHCyo3EVUHqzcV6wYw4uFIIhCdeeVl5eV4bYg4XmsiCUFg6H15TUl0DBHmtXCEyTiMM6+eizORASd1VPSWZ8RJXUaGQIJ6Wxe0NAamyeBhujMW5eQikz2xVxb7tn++L8dr5O7siNKHqVgrHMGFinJUkJaTk9UwtjG01ijC2PxSsCOPTqR/KfROtdcp6HnU+egxMab6bIqu0uxpVWkFsezJz5g8YRwjic42M+2kV6WjRgsy5sYm9w+VNiZR+Ucj9Oc/xqf2RCGetAHEjRbwxSEAAA==) format('woff2');unicode-range:U+56FD;}
+@font-face{font-family:'SQ Title';font-weight:800;font-style:normal;font-display:block;src:url(data:font/woff2;base64,d09GMgABAAAAAA20AA8AAAAAJXgAAA1eAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG4FAHH4GYACBLBEICrw4r3IBNgIkA0QLRAAEIAWEZAcgFyQYRBvtHVGUcVYvxVcHtiGaO9TDAAaNUDQWjUXj1CnLAnCh/JHssU4BCnx3ryMkmeXhn/39t8+779sDJbnJ9bVBBBDHjasrtImqcCWT8z1DtK1mkyVqWWhhtTEpCyzAqEKsQC+yuEivqvmOi4pBNzR5k9aRqgktk2vX17vdidQECDXRBbLTXjs3+OjXdkAi/tDB+6WIt/Lq7jAdahXRKNqADzMYA3DetR9xQ6UR9TqhQ0iESinbsMk32x1mu29AMkkeimhJVBF/nUSjkbRUIq2SIilmdJPx7yoEFf6ZvGGLuk1EgEpqmclxc0sBaKYWClqeml0MCChwMcQMOuxydAICKN3Q3msqcFQaCmbCwtaRu3SVL9F5oCMfO19eBUvzutN5w7Jmd+Zw2YvMzzsAhE2EIiYlI6eg5EWNBqOwIMj8i5F/tedPUN5EQsVAwVZwfqLN/1pAuVWIomyaObbiA/9jaQDwDs+GAVAOqUSA5OBwMgYJI4AA1kpqOVES2lQhtu4QPmCsX4cPKf5FaIABlQtwOQDW9d4cm4AhQgGgSZJV7zIra8lFIGlmqu4j4vp6juo5SEaFnRff4VsgdxyEUQFc1qsCsnNQS+QEtP0M4Zmpujxdga5bN0w3UjdNt0C3WbdLd0R3QndZ91D3WPfxa0L4E3t+27PPs9ezyDPTM90z2jPI4/BUeQo9eZ4Uj6/Hx+MHIBVuhVCm5rjxcClYmNx8vbb1JrCtjT1RWWEGLw0MUCBgezYwCYC+iSUnl3Ob8tNJwdcnpTjY37cbV6t+amuKCCX5keW89TI8PG4Q8b5Yh2iasHWUpkGwedWMNR3sTd58BHZQHPdfNCioJYguMgZxkXYS7B2kvSXIBF1x7Pz4bYbtbECp9PsszHXTlppjOblttC7qkKU4C0Lu5000FwE3aCcccC+SAvhEx3GAA/QHBXaBERg5BWjKCZUUJIj4zGQGE12U0d1RkpYO83LuUU+C3LBx3mDbvNwFAYCPU2PVAZP/BkaBscAhsIC0l3TkQlj0hP5uQePEYwXLlZSVz3QqOzx4hGWP6HgHERROVcV/JC5KlTC2RYYbSxPgh7YuiYbc5dyN4X7QcEzaCDiHJ5P5wf+ko708zYLMyAAb9S3BrdN05c6UHjlpc3vnkBJeUk4ekJ7OzEpW1SP2k/eZqIvz2ImO0zMv4MQ5RWuHAlWDeFrQKE+E65I4DXc93GgIhgaMiBNMHMEj/lQVsHkgK9axd8FCjEGRkn4aNUJnnCYMz80Va6P3nUeNgwoaXkri7l4sjjrmklxXuAXUaIDzXuYH4AiCwHt/JmLwGBRPIMLwnLAiybezJm/Gbm6KPXxHMgLHekI7sbeFH/oD+kR9QzQLX4+DO+tbSAfgFm92VzaVBolMJqfbD0OOi0k8IZCjolJ3KofmxyELykKKMe5Y3h0yuZ46EY+nH0tPKuX8cSsGn9zhE0J6SQc0oi9gcqHj0Rk8w5jsuj4/ggIrJOB0R1rwQFM4BWCLkI6AUZWH2CVzBP9vD5fTJQE0RCUjx9gUZEXQomSZBDMgNS0uxoghcKUN+5xfj8Z8Iu4b4dNioJwOweNNMMgNSiA+fzue5Mdv4/fjK2DHGDZHKZW4o3DAz486BInb2EAStKeNHpKKTSrn4rQXcsbMQ6BwB2J7FVskxYTgO+BLdKwZtOaWQQgZPkQLYhRjV1Jdsof42QGynqwT7EfOEZujFUwoWCJrwglu/kpynBFAv0nc7CjM7dXmIDOnn6DTYSO7t7Hq6C2p1g1EOqFj79QWcbYyg6IZrBA0PAcKmO6ND2gXTnmX1cCv6TuxgbRfuRiCxpX1Q6zl4CbjJ2atZbtq9WqkBIWTPaM44IcfpOtBm1mPNI3Iy6FxZi/1yg1js+oH7Pzthu85aTPlLv6BXgRwBF0DU39iTU9eL1uy2cd/6D+pV5maA40L7HpFKy77OXCxo9GPfSvw57LoTcq54Iv27N8/6+XilSVX6bvufgfHfc+e8S0Y+4I18i8gzxkKowuJ/RcZ6Kb9Vt6H+9tQFIHvv9uW05SFKfgDf3iQSpFliudz46/3NWCGAziGDCrYbXf/uSpCnesvP3n9z89S6YcvYf4HMHz59qEk9bmpoIDtldBaOrCt98T10eM5AJ/7+El4o77+wPwOSqTNDbWGFU6KruFKpwcRCDaRr04jX+VUU+TsNcMHXfmzxpZ7kid4VGQ1l1Um9cbRuAZE/m3x9sPffGoA6TsDbIqmK209KSnKBgxH0YXjqmYKhzFTMoJEgnztsdKaWRiKws6QrRTZbhJh2U2jP9VjxAaR3HNKyiqBMe6Bu4KxdFbd/X5GjPayRTZ/6Z8i6TOREC5LVM/O0HNKDzlYySq9zH6TLIVRDMXsioxCkwoK6JXlRsqHMvDL8wI7Q5LasRnLMdalszj6ghM03NuR6lo+ZOCwDX+XLPLDUIpuFWyscSxqGNcyZag2lMVhUEs5VrrLr8IrrWBoYYraP60wbETsgBHbTlU6AzJTDIZMzqBy6yi7UZlezA3O6otICx6ZA0z7rUYy44TDCBNZHE10hr+v+E+qZcTKEXEl8fUo45YkMztSK5WRkXGnh9v2nt4mofxE3dEGZcCHZm+Cyzmb/7xZdvpWXGbsg6Ij55X0Ybulv2ZVXJYqTmGjgeEOjptHSWcGyfsndA0RKF/Iov8w5UxNl02Qlt4YECrTvF7lNwJFMc7wBcmpoUykc2fbWWWBjTLDiKv2lmlY5Tp83x8fWxEY3ih4+1uftESm389WKqRkkiQwi+NnXj2iLM3XV76KzQnbXO1ukzklMHKWrU9LJtM01AK+8tG1LVvxIgjhZgVVUrKVpOCOaUjSns7Y0oAIe4ElTIWm+8SIxoopKCVOzGI1WPNK56AIgt4ryDOpX+o5BZug3rQiolyo9HnEw1+vWvEeI+Y7LL42gS8iY+ZWefsNXNU3jSiQ9c03OJmsTeuu58+BMe6r+0Mhz6QBNj8QP5mBrZu7VLJ4SrPON8nfaMlRZS7pEetTYmMt3MmYFeJnE/LpH9oNbT0E2+0rvIhgdGxpoP4WJU9XcNsehF4XifAMAWsDPHoylzfsplE5lYXPvv+NFKQPrdCacyNrdk9+HnyB+WI1wcnW9w/rL9Z/VlX5iGrqJJHqNH18asZNhdOLJ7LelHl/0gtlv8W47M7Esrh8fYZf0CI2p33PNQSfJhAOvhAcZLKV/ZyVscovGiEIRnN5QUGMzaBIpWV5uSIa8ZLYQ3Lq6cyjDGC85vfkEU/JxazxTs2ApHRmEWuUDGalsvxSjGFWAY4T2oF6dgVzHEeHMMoitLUAHnb95F5WzvayxgvnMjAMPh9qCv9LERJtnSsWVU/isLpIV1It9x8CX6rm47fNK9nlKGW17ft37uJGMQH+PvUmJeZBwUrHLMeCn47eb5rrtZrAsPPuLZddVThBoH3hN4S8H3tR1pCcou2uAs0EDIWRB/mWMYvSxsiFl5rOouitQ3K1XfMHiXVGfpdCYCUYWrh186itfJC+DWf+WOM/vc3sM0guVm9LTW4YMAgnhhRX/DpjhaUAxVHsYGvszQPLzqmyzTiGscb6z4t1BxLykTUyRgyCPDu1EqS6HfRfvUDF4A86xSeOP1zXH5l/D4zAaNi3Nf7pm5O/aGpslfcFI4w3ewfscI9WMMsHJ15uvhL26s4s18FmVi0z15K6fRyCMfhDtM0FcQGbvcH/HyrbsQVJKaqzUp/15uZ/F/6DdokRV3adSh27jiNOl2RJyMy0aLxiEJi8oDw5I6ZwvgFmV8rkFM/7a0DXwFs1ZUwAndi/Xo5Ld4cyJTQJ50vZget+5cEMpUT88tYgc1BVTflAuw9OILwe0/quysLHOIww9qR0jBiaG7u9aIkS78TwyfWFE/8lhxv5YemGn2A0VSSNcmSTzH4IH6vp7V45qibTbwACTu5L8k6gWJqiPITKFWZ9C2Oc22sCaQO6oIMwVTiBfX0/X+Fj0zDFQl/ywoqlv/+ccRbB/Fs1gguz/JqY35Ela3nCq/vx2rW2MryGfV6gF+eI3BJiCld7imtl+iBEEHUKvCS/m2FW56PBLdrgKVu7JXgq7VhNlhyethgVND8xI7aOH/ea4CP3AODNxtbFAN8nuBOAKs+Li0g6ABrArF2q576sgQpikvnMASAui/1DRgUMBYM1NoswwEtH2JlYjYzIKhuM0mrpXK+A1sa7izG+faJGzRBQlQmAe4xokBgnNRjPGw2RGehElFDDpEauhjOF+2E8UXEZ2PVwGaZPmxatBqIZ6BalRyvOYRMrCrKNy0UPOQLLUdXNqbUpWr6+wNoLwgkjrQYF0coCB4ggeDYQagCzCDdatJEhWjUI5zTWtWPNgXX3nEYOMGhc+WOD2Wm1EzYsKsVQAynpYNsd1KlRoSYtBunkMGUUTu9fX8ciVbFkRSzyCXhJYbCU4BZtaBDGwAt6HoxmjhkSPTKMbgNzNpiU4WKWJTfSyh93lnEQTgDpMjAR4ZqxThBY1kINyJMqG6IqNzfN1js6AfS/9EDuyQeDIJZiByBOBDMQ30GCcnvcslmOkmCBqR47peaNMiQOAA==) format('woff2');unicode-range:U+3046,U+304F,U+3051,U+306E,U+3079,U+307C,U+3089,U+3093,U+30A8,U+30AF,U+30B9,U+30BD,U+30C8,U+30EB,U+30ED,U+30FB;}
 </style>
 </head>
 <body>
@@ -1595,7 +1603,7 @@ new MutationObserver(ms=>{ ms.forEach(m=>m.addedNodes.forEach(n=>rubyfy(n))); })
 function showTitle(){
   M=null; showBar(false); renderHdr();
   app.innerHTML = `<div class="title-screen">
-    <div class="kv frame">${pic('kv','', 'くらべの国')}${hasImg('title_emblem')?'':'<div class="logo-big">ソロエル・クエスト<small>〜 くらべの国の ぼうけん 〜</small></div>'}</div>${hasImg('title_emblem')?`<div class="emb">${pic('title_emblem','','')}<div class="et">ソロエル・クエスト</div><div class="es">〜 くらべの国の ぼうけん 〜</div></div>`:''}
+    <div class="kv frame">${pic('kv','', 'くらべの国')}${hasImg('title_emblem')?'':'<div class="logo-big">ソロエル・クエスト<small>〜 くらべの国の ぼうけん 〜</small></div>'}</div>${hasImg('title_emblem')?`<div class="emb">${pic('title_emblem','','')}<div class="et"><span>ソロエル・クエスト</span></div><div class="es"><span>〜 くらべの国の ぼうけん 〜</span></div></div>`:''}
     <div class="menu">
       <button class="btn pri big" id="t-new">はじめから</button>
       ${S.started ? '<button class="btn big" id="t-cont">つづきから</button>' : ''}
@@ -1603,6 +1611,7 @@ function showTitle(){
     </div>
     ${canSave() ? '' : '<p class="muted">この ブラウザでは きろくが ほぞんできません。せってい の「あいことば」を 書きとめておいてね。</p>'}
   </div>`;
+  fitEmblem(); if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitEmblem);
   $('#t-new').addEventListener('click', ()=>{
     if(S.started){ showModal(`<h2>はじめから？</h2><p>いまの きろく（Lv.${levelOf(S.xp)}、XP ${S.xp}）は きえます。いいですか？</p>`, [{label:'やめる'},{label:'きえても いい', cls:'pri', onClick:()=>{ const keep={...S.settings}; S=defaultSave(); S.settings=keep; save(); showMaker(); }}]); }
     else showMaker();
@@ -1635,6 +1644,17 @@ function showParents(){
 }
 
 /* ---------- 主人公づくり ---------- */
+// タイトルの 文字が 紋章の 帯から はみ出さないように（フォントが 読めなかった ときの 保険）
+function fitEmblem(){
+  const emb = $('.title-screen .emb'); if(!emb) return;
+  [['.et span', .56], ['.es span', .62]].forEach(([sel, k])=>{
+    const sp = $(sel, emb); if(!sp) return;
+    const box = sp.parentNode; box.style.fontSize = '';
+    const max = emb.clientWidth * k, w = sp.getBoundingClientRect().width;
+    if(w > max && w > 0){ const fs = parseFloat(getComputedStyle(box).fontSize); box.style.fontSize = (fs * max / w).toFixed(2) + 'px'; }
+  });
+}
+window.addEventListener('resize', fitEmblem);
 function showMaker(){
   showBar(false); renderHdr();
   let look = (S.look||0) % LOOK_N;
