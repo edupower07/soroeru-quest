@@ -155,6 +155,11 @@ img{ max-width:100%; }
 .scene{ display:flex; flex-wrap:wrap; gap:12px; justify-content:center; align-items:flex-end; }
 .room{ flex:1 1 180px; max-width:320px; }
 .room svg{ width:100%; height:auto; display:block; }
+/* へやの 場面：どの へやも おなじ 幅に して、たたみの 大きさを そろえる（のびない・折りかえしても 幅は おなじ） */
+.scene.rooms{ align-items:flex-start; }
+.scene.rooms .room{ flex:0 0 var(--roomw); width:var(--roomw); max-width:none; }
+.scene.rooms{ --roomw:min(300px, 100%); }
+.probcard .scene.rooms{ --roomw:min(260px, 100%); }
 .room .rtitle{ font-weight:900; text-align:center; font-size:.95em; line-height:1.3; margin-bottom:4px; }
 .room .rtitle span{ font-weight:700; font-size:.9em; }
 .room .mat{ fill:#cfe3b0; stroke:#8ab35a; stroke-width:1.5; }
@@ -1118,12 +1123,19 @@ function speaker(text, mood=''){
 function talkHTML(text, mood=''){ if(!text) return ''; const sp = speaker(text, mood); return `<div class="talk">${sp.img}<div class="say">${sp.name?`<span class="name">${sp.name}</span>`:''}${R(sp.body)}</div></div>`; }
 
 /* ---------- 場面のイラスト ---------- */
-function roomSVG(item, q, opt={}){
-  const t=item.top, p=item.bottom;
+// へやの 大きさ（たたみの ならび方で きまる）
+function roomDims(t){
   const cols = t<=4?2 : t<=6?3 : t<=8?4 : t<=10?5 : 4;
   const rows = Math.ceil(t/cols);
+  return { cols, rows, W: 8*2 + cols*(44+3), H: 30 + rows*(28+3) + 10 };
+}
+// frame：おなじ 場面の へやは、いちばん 大きい へやの わくに そろえて かく。
+// こうすると どの へやも おなじ 縮尺に なり、たたみ1まいが 画面上で おなじ 大きさに 見える
+function roomSVG(item, q, opt={}, frame=null){
+  const t=item.top, p=item.bottom;
+  const { cols, rows, W, H } = roomDims(t);
   const mw=44, mh=28, g=3, ox=8, oy=30;
-  const W = ox*2 + cols*(mw+g), H = oy + rows*(mh+g) + 10;
+  const FW = frame ? frame.W : W, FH = frame ? frame.H : H, dx = (FW - W) / 2;
   const col = colOf(item.label);
   let mats='';
   for(let i=0;i<t;i++){
@@ -1160,8 +1172,8 @@ function roomSVG(item, q, opt={}){
     people += `<g class="person${hl}" transform="translate(${r3(cx)} ${r3(cy)})${sc<1?` scale(${r3(sc)})`:''}"><circle class="head" cx="0" cy="-7" r="4.5" stroke="#8a5a30" stroke-width="1"/><path class="bod" d="M-6 9 Q-6 -1 0 -1 Q6 -1 6 9 Z" fill="${col}"/></g>`;
   });
   const title = opt.noLabel ? '' : `<div class="rtitle" style="color:${col}">${item.label}の へや　<span>たたみ${t}まい・${p}人</span></div>`;
-  return `<div class="room">${title}<svg viewBox="0 22 ${W} ${H-22}" aria-label="${item.label}のへや たたみ${t}まい ${p}人">
-    <rect x="2" y="24" width="${W-4}" height="${H-30}" rx="8" fill="#f3ead6" stroke="#b89b6b" stroke-width="2"/>${mats}${people}</svg></div>`;
+  return `<div class="room">${title}<svg viewBox="0 22 ${FW} ${FH-22}" aria-label="${item.label}のへや たたみ${t}まい ${p}人"><g transform="translate(${r3(dx)} 0)">
+    <rect x="2" y="24" width="${W-4}" height="${H-30}" rx="8" fill="#f3ead6" stroke="#b89b6b" stroke-width="2"/>${mats}${people}</g></svg></div>`;
 }
 // へや以外：2つの 量を 帯（ぼう）で 見せる。おなじ 量どうしは おなじ ものさしで ならぶ
 function cardSVG(item, q, maxT, maxB, opt={}){
@@ -1180,7 +1192,11 @@ function cardSVG(item, q, maxT, maxB, opt={}){
 }
 const sceneArt = (q, cls='sceneart') => q && q.art && hasImg(q.art) ? `<div class="${cls}">${pic(q.art,'',q.thing)}</div>` : '';
 function sceneHTML(items, q, opts={}){
-  if(q.scene==='room') return `<div class="scene">${items.map(it=>roomSVG(it,q,opts[it.label]||{})).join('')}</div>`;
+  if(q.scene==='room'){
+    const ds = items.map(it=>roomDims(it.top));
+    const frame = { W: Math.max(...ds.map(d=>d.W)), H: Math.max(...ds.map(d=>d.H)) };
+    return `<div class="scene rooms">${items.map(it=>roomSVG(it,q,opts[it.label]||{},frame)).join('')}</div>`;
+  }
   const maxT = Math.max(...items.map(i=>i.top)), maxB = Math.max(...items.map(i=>i.bottom));
   return `<div class="scene">${sceneArt(q)}${items.map(it=>cardSVG(it,q,maxT,maxB,opts[it.label]||{})).join('')}</div>`;
 }
